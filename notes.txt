@@ -1,0 +1,70 @@
+Notes:
+
+*** Bitboards ***
+
+** Board of sets **
+- one bitboard for each piece-type and color
+- 1 = occupied, 0 = empty
+- deduction on files/ranks
+    squareIndex = 8*rankIndex + fileIndex
+    FileIndex   = squareIndex modulo 8  = squareIndex & 7
+    RankIndex   = squareIndex div    8  = squareIndex >> 3  
+- A1 = 0, H8 = 63
+- compass rose
+    +7 +8 +8
+    -1  0 +1
+    -9 -8 -7
+- hexdecimal constants 
+    a-file             0x0101010101010101
+    h-file             0x8080808080808080
+    1st rank           0x00000000000000FF
+    8th rank           0xFF00000000000000
+    a1-h8 diagonal     0x8040201008040201
+    h1-a8 antidiagonal 0x0102040810204080
+    light squares      0x55AA55AA55AA55AA
+    dark squares       0xAA55AA55AA55AA55
+- Bitboards
+    occupancy bitboards (1)
+    piece type bitboards (12)
+    color bitboards (2)
+    individual square bitboard? (64)
+
+** Techniques **
+- equality -> == / != 
+- empty/not empty -> ==a / a!=0
+- intersection (overlap) -> = a & b
+    ex: queen_attack_locations & opponent_pieces = attacked_pieces
+- union (both) -> = a | b
+    ex: white_pieces | black_pieces = occupied_squares
+- complement (not a and not a&b) -> = ~a
+    ex: ~occupied_squares = empty_squares
+    used for DeMorgans law as well
+- Exclusive or (XOR, only a and only b) -> = a ^ b 
+more => https://www.chessprogramming.org/General_Setwise_Operations
+- when preforming shifts, we should &notHFile / &notAFile to make sure it doesnt fall off the map when shifts
+    ex: all push-targets of white pawns
+    whiteSinglePawnPushTargets = nortOne(whitePawns) & emptySquares;
+- Mirroring will be needed when comparing colors 
+    sq' = sq ^ 56;
+    more => https://www.chessprogramming.org/Flipping_Mirroring_and_Rotating
+
+
+** Pattern and Attacks **
+
+* Pawns *
+1. pushes 
+    single: 
+        return northOne(wpawns) & empty 
+    double: 
+        const U64 rank4 = C64(0x00000000FF000000);
+        U64 singlePushs = wSinglePushTargets(wpawns, empty);
+        return nortOne(singlePushs) & empty & rank4;
+    able to push:
+        singe: 
+            return soutOne(empty) & wpawns;
+        double:
+            const U64 rank4 = C64(0x00000000FF000000);
+            U64 emptyRank3 = soutOne(empty & rank4) & empty;
+            return wPawnsAble2Push(wpawns, emptyRank3);
+
+* Knight *
