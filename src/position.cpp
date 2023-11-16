@@ -1,7 +1,88 @@
 #include <iostream>
-#include "bits.h"
-#include "movement.h"
-using namespace std;
+#include "bitboard.h"
+#include "position.h"
+
+namespace Chess {
+
+Pieces::Pieces() {
+    generate_attack_moves_();
+    generate_all_game_pieces_();
+}
+
+/**
+ * Generates all possible move for pieces based on positon.
+ * 
+ * @param None
+ * @return void
+ */
+void Pieces::generate_attack_moves_() {
+    std::cout << "Generating attack moves for each piece..." << std::endl;
+
+    for (int square = 0; square < 64; ++square) {
+        // pawn attacks
+        this->attack_pawns[white][square] = generate_pawn_attacks_(white, square);
+        this->attack_pawns[black][square] = generate_pawn_attacks_(black, square);
+        // knight attacks
+        this->attack_knights[square] = generate_knight_attacks_(square);
+        // bishop attacks
+        this->attack_bishops[square] = generate_bishop_attacks_(square);
+        // rook attacks
+        this->attack_rooks[square] = generate_rook_attacks_(square);
+        // queen attacks
+        this->attack_queens[square] = generate_queen_attacks_(square);
+        // king attacks
+        this->attack_kings[square] = generate_king_attacks_(square);
+    }
+}
+
+/**
+ * Generates all game pieces.
+ * 
+ * @param None
+ * @return void
+ */
+void Pieces::generate_all_game_pieces_() {
+    std::cout << "Generating all games pieces..." << std::endl;
+
+    // pawns
+    this->pawns[white] = 0ULL;
+    this->pawns[black] = 0ULL;
+    for (int i = 0; i < 8; ++i) {
+        this->pawns[white] |= (1ULL << (a2+i));
+        this->pawns[black] |= (1ULL << (a7+i));
+    }
+    // knights
+    this->knights[white] = 0ULL;
+    this->knights[black] = 0ULL;
+    this->knights[white] |= (1ULL << b1);
+    this->knights[white] |= (1ULL << g1);
+    this->knights[black] |= (1ULL << b8);
+    this->knights[black] |= (1ULL << g8);
+    // bishops
+    this->bishops[white] = 0ULL;
+    this->bishops[black] = 0ULL;
+    this->bishops[white] |= (1ULL << c1);
+    this->bishops[white] |= (1ULL << f1);
+    this->bishops[black] |= (1ULL << c8);
+    this->bishops[black] |= (1ULL << f8);
+    // rooks
+    this->rooks[white] = 0ULL;
+    this->rooks[black] = 0ULL;
+    this->rooks[white] |= (1ULL << a1);
+    this->rooks[white] |= (1ULL << h1);
+    this->rooks[black] |= (1ULL << a8);
+    this->rooks[black] |= (1ULL << h8);
+    // queens
+    this->queens[white] = 0ULL;
+    this->queens[black] = 0ULL;
+    this->queens[white] |= (1ULL << d1);
+    this->queens[black] |= (1ULL << d8);
+    // kings
+    this->kings[white] = 0ULL;
+    this->kings[black] = 0ULL;
+    this->kings[white] |= (1ULL << e1);
+    this->kings[black] |= (1ULL << e8);
+}
 
 /**
  * Generates all possible move for pawns based on positon.
@@ -10,11 +91,11 @@ using namespace std;
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_pawn_attacks(int color, int square) {
-    Bitboard attacks = 0ULL;
-    Bitboard board = 0ULL;
+uint64_t Pieces::generate_pawn_attacks_(int color, int square) {
+    uint64_t attacks = 0ULL;
+    uint64_t board = 0ULL;
 
-    set_bit(board, square); // adds square to theoretical board
+    board |= (1ULL << square);
 
     // white pawn moves
     if (!color) {
@@ -36,11 +117,11 @@ Bitboard generate_pawn_attacks(int color, int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_knight_attacks(int square) {
-    Bitboard attacks = 0ULL;
-    Bitboard board = 0ULL;
+uint64_t Pieces::generate_knight_attacks_(int square) {
+    uint64_t attacks = 0ULL;
+    uint64_t board = 0ULL;
 
-    set_bit(board, square); // adds square to theoretical board
+    board |= (1ULL << square);
 
     // knight moves
     if ((board >> 17) & not_h) attacks |= (board >> 17);
@@ -61,8 +142,8 @@ Bitboard generate_knight_attacks(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_bishop_attacks(int square) {
-    Bitboard attacks = 0ULL;
+uint64_t Pieces::generate_bishop_attacks_(int square) {
+    uint64_t attacks = 0ULL;
 
     // init target rank and files
     int target_rank = square / 8; // 4
@@ -82,8 +163,8 @@ Bitboard generate_bishop_attacks(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_rook_attacks(int square) {
-    Bitboard attacks = 0ULL;
+uint64_t Pieces::generate_rook_attacks_(int square) {
+    uint64_t attacks = 0ULL;
     
     
     // init target rank and files
@@ -105,16 +186,16 @@ Bitboard generate_rook_attacks(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_queen_attacks(int square) {
-    Bitboard attacks = 0ULL;
+uint64_t Pieces::generate_queen_attacks_(int square) {
+    uint64_t attacks = 0ULL;
 
-    Bitboard bishop_attacks = 0ULL;
-    Bitboard rook_attacks = 0ULL;
+    uint64_t bishop_attacks = 0ULL;
+    uint64_t rook_attacks = 0ULL;
     
-    bishop_attacks = generate_bishop_attacks(square);
+    bishop_attacks = generate_bishop_attacks_(square);
     attacks |= bishop_attacks;
 
-    rook_attacks = generate_rook_attacks(square);
+    rook_attacks = generate_rook_attacks_(square);
     attacks |= rook_attacks;
 
     return attacks;
@@ -126,11 +207,11 @@ Bitboard generate_queen_attacks(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-Bitboard generate_king_attacks(int square) {
-    Bitboard attacks = 0ULL;
-    Bitboard board = 0ULL;
+uint64_t Pieces::generate_king_attacks_(int square) {
+    uint64_t attacks = 0ULL;
+    uint64_t board = 0ULL;
 
-    set_bit(board, square); // adds square to theoretical board
+    board |= (1ULL << square);
 
     // king moves
     if (board >> 8) attacks |= (board >> 8);
@@ -143,4 +224,16 @@ Bitboard generate_king_attacks(int square) {
     if ((board << 1) & not_a) attacks |= (board << 1);
 
     return attacks;
+}
+
+
+void Pieces::attacks_to(int position) {
+
+    // king on a1
+
+    std::cout << ((this->attack_queens[h8] & (1ULL << position)) != 0) << std::endl;
+
+
+}
+
 }
