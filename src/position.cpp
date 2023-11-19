@@ -1,12 +1,23 @@
 #include <iostream>
 #include "bitboard.h"
+#include "magic.h"
 #include "position.h"
+using namespace std;
 
-namespace Chess {
+void Positions::init() {
+    cout << "Initializing board..." << endl;
 
-Pieces::Pieces() {
-    generate_attack_moves_();
-    generate_all_game_pieces_();
+    cout << "Generating attack moves for each piece..." << endl;
+    generate_attack_moves();
+
+    cout << "Generating all games pieces..." << endl;
+    generate_all_game_pieces();
+
+    cout << "Initializing magic (bishop)..." << endl;
+    init_bishop_table(this->bishop_mask, this->bishop_table);
+
+    cout << "Initializing magic (rook)..." << endl;
+    init_rook_table(this->rook_mask, this->rook_table);
 }
 
 /**
@@ -15,23 +26,21 @@ Pieces::Pieces() {
  * @param None
  * @return void
  */
-void Pieces::generate_attack_moves_() {
-    std::cout << "Generating attack moves for each piece..." << std::endl;
-
+void Positions::generate_attack_moves() {
     for (int square = 0; square < 64; ++square) {
         // pawn attacks
-        this->attack_pawns[white][square] = generate_pawn_attacks_(white, square);
-        this->attack_pawns[black][square] = generate_pawn_attacks_(black, square);
+        this->pawn_mask[white][square] = generate_pawn_mask(white, square);
+        this->pawn_mask[black][square] = generate_pawn_mask(black, square);
         // knight attacks
-        this->attack_knights[square] = generate_knight_attacks_(square);
+        this->knight_mask[square] = generate_knight_mask(square);
         // bishop attacks
-        this->attack_bishops[square] = generate_bishop_attacks_(square);
+        this->bishop_mask[square] = generate_bishop_mask(square);
         // rook attacks
-        this->attack_rooks[square] = generate_rook_attacks_(square);
+        this->rook_mask[square] = generate_rook_mask(square);
         // queen attacks
-        this->attack_queens[square] = generate_queen_attacks_(square);
+        this->queen_mask[square] = generate_queen_mask(square);
         // king attacks
-        this->attack_kings[square] = generate_king_attacks_(square);
+        this->king_mask[square] = generate_king_mask(square);
     }
 }
 
@@ -41,10 +50,8 @@ void Pieces::generate_attack_moves_() {
  * @param None
  * @return void
  */
-void Pieces::generate_all_game_pieces_() {
-    std::cout << "Generating all games pieces..." << std::endl;
-
-    // pawns
+void Positions::generate_all_game_pieces() {
+    // pawns;
     this->pawns[white] = 0ULL;
     this->pawns[black] = 0ULL;
     for (int i = 0; i < 8; ++i) {
@@ -91,9 +98,9 @@ void Pieces::generate_all_game_pieces_() {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_pawn_attacks_(int color, int square) {
-    uint64_t attacks = 0ULL;
-    uint64_t board = 0ULL;
+bb Positions::generate_pawn_mask(int color, int square) {
+    bb attacks = 0ULL;
+    bb board = 0ULL;
 
     board |= (1ULL << square);
 
@@ -117,9 +124,9 @@ uint64_t Pieces::generate_pawn_attacks_(int color, int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_knight_attacks_(int square) {
-    uint64_t attacks = 0ULL;
-    uint64_t board = 0ULL;
+bb Positions::generate_knight_mask(int square) {
+    bb attacks = 0ULL;
+    bb board = 0ULL;
 
     board |= (1ULL << square);
 
@@ -142,17 +149,17 @@ uint64_t Pieces::generate_knight_attacks_(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_bishop_attacks_(int square) {
-    uint64_t attacks = 0ULL;
+bb Positions::generate_bishop_mask(int square) {
+    bb attacks = 0ULL;
 
     // init target rank and files
     int target_rank = square / 8; // 4
     int target_file = square % 8; // 4
 
-    for (int rank = target_rank+1, file = target_file+1; rank < 8 && file < 8; ++rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NW
-    for (int rank = target_rank-1, file = target_file+1; rank >= 0 && file < 8; --rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NE
-    for (int rank = target_rank+1, file = target_file-1; rank < 8 && file >= 0; ++rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SW
-    for (int rank = target_rank-1, file = target_file-1; rank >= 0 && file >= 0; --rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SE
+    for (int rank = target_rank+1, file = target_file+1; rank < 7 && file < 7; ++rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NW
+    for (int rank = target_rank-1, file = target_file+1; rank > 0 && file < 7; --rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NE
+    for (int rank = target_rank+1, file = target_file-1; rank < 7 && file > 0; ++rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SW
+    for (int rank = target_rank-1, file = target_file-1; rank > 0 && file > 0; --rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SE
 
     return attacks;
 }
@@ -163,19 +170,18 @@ uint64_t Pieces::generate_bishop_attacks_(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_rook_attacks_(int square) {
-    uint64_t attacks = 0ULL;
-    
+bb Positions::generate_rook_mask(int square) {
+    bb attacks = 0ULL;
     
     // init target rank and files
     int target_rank = square / 8;
     int target_file = square % 8;
     
     // mask relevant bishop occupancy bits
-    for (int rank = target_rank+1; rank < 8; ++rank) attacks |= (1ULL << (rank * 8 + target_file)); // W
-    for (int rank = target_rank-1; rank >= 0; --rank) attacks |= (1ULL << (rank * 8 + target_file)); // E
-    for (int file = target_rank+1; file < 8; ++file) attacks |= (1ULL << (target_rank * 8 + file)); // N
-    for (int file = target_rank-1; file >= 0; --file) attacks |= (1ULL << (target_rank * 8 + file)); // S
+    for (int rank = target_rank+1; rank < 7; ++rank) attacks |= (1ULL << (rank * 8 + target_file)); // W
+    for (int rank = target_rank-1; rank > 0; --rank) attacks |= (1ULL << (rank * 8 + target_file)); // E
+    for (int file = target_rank+1; file < 7; ++file) attacks |= (1ULL << (target_rank * 8 + file)); // N
+    for (int file = target_rank-1; file > 0; --file) attacks |= (1ULL << (target_rank * 8 + file)); // S
 
     return attacks;
 }
@@ -186,16 +192,16 @@ uint64_t Pieces::generate_rook_attacks_(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_queen_attacks_(int square) {
-    uint64_t attacks = 0ULL;
+bb Positions::generate_queen_mask(int square) {
+    bb attacks = 0ULL;
 
-    uint64_t bishop_attacks = 0ULL;
-    uint64_t rook_attacks = 0ULL;
+    bb bishop_attacks = 0ULL;
+    bb rook_attacks = 0ULL;
     
-    bishop_attacks = generate_bishop_attacks_(square);
+    bishop_attacks = generate_bishop_mask(square);
     attacks |= bishop_attacks;
 
-    rook_attacks = generate_rook_attacks_(square);
+    rook_attacks = generate_rook_mask(square);
     attacks |= rook_attacks;
 
     return attacks;
@@ -207,9 +213,9 @@ uint64_t Pieces::generate_queen_attacks_(int square) {
  * @param square : position on board
  * @return board : 64 bit unsigned integer board representation 
  */
-uint64_t Pieces::generate_king_attacks_(int square) {
-    uint64_t attacks = 0ULL;
-    uint64_t board = 0ULL;
+bb Positions::generate_king_mask(int square) {
+    bb attacks = 0ULL;
+    bb board = 0ULL;
 
     board |= (1ULL << square);
 
@@ -227,13 +233,35 @@ uint64_t Pieces::generate_king_attacks_(int square) {
 }
 
 
-void Pieces::attacks_to(int position) {
+void Positions::attacks_to(int position, int color, bb queen_board, bb pawn_board) {
 
-    // king on a1
+    // king on a3
 
-    std::cout << ((this->attack_queens[h8] & (1ULL << position)) != 0) << std::endl;
+    // check queen
+    // int queen_pos = __builtin_ctzll(queen_board);
+    // if (this->queen_mask[queen_pos] & temp_king != 0) cout << true << endl;
+    // printBoard(this->pawn_mask[!color][position]);
+    // printBoard(this->pawns[!color]);
 
+    // check pawn
+    // if (this->pawn_mask[!color][position] & this->pawns[!color]) {
+    //     cout << "attack" << endl;
+    // }
+    cout << "queen" << endl;
+    queen_board |= (1ULL << a8);
+    queen_board &= this->queen_mask[position];
+    printBoard(queen_board);
 
-}
+    cout << "pawn" << endl;
+    pawn_board |= (1ULL << b4);
+    pawn_board &= this->pawn_mask[color][position];
+    printBoard(pawn_board);
+
+    printBoard(queen_board | pawn_board);
+
+    // Logic: get queens attack board from kings perspective and see
+    //        if the queen attack board sees the queens position.
+
+    // cout << ((this->queen_mask[h8] & (1ULL << position)) != 0) << endl;
 
 }

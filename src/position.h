@@ -4,37 +4,44 @@
 #include <iostream>
 #include "bitboard.h"
 
-namespace Chess {
-
-class Pieces {
+class Positions {
     public:
-        Pieces();
-        void generate_attack_moves_();
-        void generate_all_game_pieces_();
-        void attacks_to(int position);
+        Positions() = default;
+        void init();
+        void generate_attack_moves();
+        void generate_all_game_pieces();
+        void attacks_to(int position, int color, bb queen_board, bb pawn_board);
     private:
-        uint64_t generate_pawn_attacks_(int color, int square);
-        uint64_t generate_knight_attacks_(int square);
-        uint64_t generate_bishop_attacks_(int square);
-        uint64_t generate_rook_attacks_(int square);
-        uint64_t generate_queen_attacks_(int square);
-        uint64_t generate_king_attacks_(int square);
-    private:
-        uint64_t attack_pawns[2][64];
-        uint64_t attack_knights[64];
-        uint64_t attack_bishops[64];
-        uint64_t attack_rooks[64];
-        uint64_t attack_queens[64];
-        uint64_t attack_kings[64];
+        bb generate_pawn_mask(int color, int square);
+        bb generate_knight_mask(int square);
+        bb generate_king_mask(int square);
 
-        uint64_t pawns[2];
-        uint64_t knights[2];
-        uint64_t bishops[2];
-        uint64_t rooks[2];
-        uint64_t queens[2];
-        uint64_t kings[2];
+        // requires magic mwahah
+        bb generate_bishop_mask(int square);
+        bb generate_rook_mask(int square);
+        bb generate_queen_mask(int square);
+    public:
+        // masks
+        bb pawn_mask[2][64];
+        bb knight_mask[64];
+        bb king_mask[64];  
+
+        // requires magic mwahah
+        bb bishop_mask[64];
+        bb rook_mask[64];
+        bb queen_mask[64];
+
+        bb bishop_table[64][512];
+        bb rook_table[64][4096];
+
+        // pieces
+        bb pawns[2];
+        bb knights[2];
+        bb bishops[2];
+        bb rooks[2];
+        bb queens[2];
+        bb kings[2];
 };
 
-}
 
 #endif 

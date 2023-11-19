@@ -2,8 +2,7 @@
 #define BITBOARD_H
 
 #include <iostream>
-
-namespace Chess {
+using namespace std;
 
 enum { white, black };
 enum {
@@ -17,13 +16,14 @@ enum {
     a1, b1, c1, d1, e1, f1, g1, h1
 };
 
-extern const uint64_t not_a;
-extern const uint64_t not_h;
-extern const uint64_t not_ab;
-extern const uint64_t not_hg;
+typedef uint64_t bb;
 
-void printBoard(uint64_t board);
+extern const bb not_a;
+extern const bb not_h;
+extern const bb not_ab;
+extern const bb not_hg;
 
-}
+void printBoard(bb board);
+
 
 #endif 
