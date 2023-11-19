@@ -16,23 +16,18 @@ class Positions {
         bb generate_knight_mask(int square);
         bb generate_king_mask(int square);
 
-        // requires magic mwahah
         bb generate_bishop_mask(int square);
         bb generate_rook_mask(int square);
         bb generate_queen_mask(int square);
-    public:
+    private:
         // masks
         bb pawn_mask[2][64];
         bb knight_mask[64];
         bb king_mask[64];  
 
-        // requires magic mwahah
-        bb bishop_mask[64];
-        bb rook_mask[64];
-        bb queen_mask[64];
-
-        bb bishop_table[64][512];
-        bb rook_table[64][4096];
+        // bb bishop_mask[64];
+        // bb rook_mask[64];
+        // bb queen_mask[64];
 
         // pieces
         bb pawns[2];
@@ -41,6 +36,11 @@ class Positions {
         bb rooks[2];
         bb queens[2];
         bb kings[2];
+    // public section used for tests
+    public:
+        bb bishop_mask[64];
+        bb rook_mask[64];
+        bb queen_mask[64];
 };
 
 

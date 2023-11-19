@@ -10,11 +10,6 @@ int main() {
     cout << "= CHESS ENGINE | drjonah =" << endl;
     cout << "==========================\n" << endl;
 
-    // bb queen_board = 0ULL;
-    // bb pawn_board = 0ULL;
-
-    // king on a3
-
     Positions game_pieces;
     game_pieces.init();
 
@@ -27,13 +22,13 @@ int main() {
 
     printBoard(occupancy);
 
-    // bb result = get_bishop_magic_attack(d4, occupancy, game_pieces.bishop_mask, game_pieces.bishop_table);
+    // bb result = get_bishop_magic_attack(d4, occupancy, game_pieces.bishop_mask);
     // printBoard(result);
 
-    // bb result = get_rook_magic_attack(d4, occupancy, game_pieces.rook_mask, game_pieces.rook_table);
+    // bb result = get_rook_magic_attack(d4, occupancy, game_pieces.rook_mask);
     // printBoard(result);
 
-    bb result = get_queen_magic_attack(d4, occupancy, game_pieces.queen_mask, game_pieces.bishop_mask, game_pieces.rook_mask, game_pieces.bishop_table, game_pieces.rook_table);
+    bb result = get_queen_magic_attack(d4, occupancy, game_pieces.queen_mask, game_pieces.bishop_mask, game_pieces.rook_mask);
     printBoard(result);
 
     return 0;

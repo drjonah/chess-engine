@@ -5,6 +5,10 @@
 #include "bitboard.h"
 using namespace std;
 
+// tables
+extern bb bishop_magic_table[64][512];
+extern bb rook_magic_table[64][4096];
+
 // source for consts: https://github.com/maksimKorzh/chess_programming/blob/master/src/bbc/init_slider_attacks/bbc.c
 const bb rook_magic[64] = {
     0x8a80104000800020ULL,
@@ -167,11 +171,11 @@ int get_lsb(bb board);
 int generate_key(bb blockers, bb magic, int shift);
 bb get_blockers(int permutation, bb mask);
 
-void init_bishop_table(bb* bishop_mask, bb (*bishop_table)[512]);
-void init_rook_table(bb* rook_mask, bb (*rook_table)[4096]);
+void init_bishop_table(bb* bishop_mask);
+void init_rook_table(bb* rook_mask);
 
-bb get_bishop_magic_attack(int square, bb curr_occupancy, bb* bishop_mask, bb (*bishop_table)[512]);
-bb get_rook_magic_attack(int square, bb curr_occupancy, bb* rook_mask, bb (*rook_table)[4096]);
-bb get_queen_magic_attack(int square, bb curr_occupancy, bb* queen_mask, bb* bishop_mask, bb* rook_mask, bb (*bishop_table)[512], bb (*rook_table)[4096]);
+bb get_bishop_magic_attack(int square, bb curr_occupancy, bb* bishop_mask);
+bb get_rook_magic_attack(int square, bb curr_occupancy, bb* rook_mask);
+bb get_queen_magic_attack(int square, bb curr_occupancy, bb* queen_mask, bb* bishop_mask, bb* rook_mask);
 
 #endif

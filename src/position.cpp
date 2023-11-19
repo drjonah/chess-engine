@@ -14,10 +14,10 @@ void Positions::init() {
     generate_all_game_pieces();
 
     cout << "Initializing magic (bishop)..." << endl;
-    init_bishop_table(this->bishop_mask, this->bishop_table);
+    init_bishop_table(this->bishop_mask);
 
     cout << "Initializing magic (rook)..." << endl;
-    init_rook_table(this->rook_mask, this->rook_table);
+    init_rook_table(this->rook_mask);
 }
 
 /**
