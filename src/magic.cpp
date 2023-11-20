@@ -1,39 +1,14 @@
 #include <cstdint>
 #include <iostream>
+
 #include "bitboard.h"
 #include "magic.h"
+
 using namespace std;
 
 bb bishop_magic_table[64][512];
 bb rook_magic_table[64][4096];
 
-/**
- * This counts the number of 1s on the board
- * 
- * @param board 64 bit unsigned integer board representation 
- * @return number of 1s
- */
-int count_bits(bb board) {
-    int bit_count = 0;
-    while (board) {
-        bit_count += board & 1;
-        board >>= 1;
-    }
-    return bit_count;
-}
-
-/**
- * This gets the least significant bit
- * 
- * @param board 64 bit unsigned integer board representation 
- * @return least significant bit position
- */
-int get_lsb(bb board) {
-    if (board) {
-        return count_bits((board & ~board) - 1);
-    }
-    return -1;
-}
 
 /**
  * This generates a magic key to be used in finding magic positions
@@ -163,60 +138,4 @@ void init_rook_table(bb* rook_mask) {
             rook_magic_table[square][key] = attacks;
         }
     }
-}
-
-/**
- * Gets the bishops available moves based on current positioning and occupancy
- *
- * @param square current square the bishop is occupying
- * @param curr_occupancy bitboard of all occupied squares
- * @param bishop_mask array of bitboards representing possible bishop movements on each square
- * @return bitboard of available spaces the bishop can reach
- */
-bb get_bishop_magic_attack(int square, bb curr_occupancy, bb* bishop_mask) {
-    // get bishop attacks assuming current board occupancy
-    curr_occupancy &= bishop_mask[square];
-    curr_occupancy *= bishop_magic[square];
-    curr_occupancy >>= 64 - bishop_bits[square];
-    
-    // return bishop attacks
-    return bishop_magic_table[square][curr_occupancy];
-}
-
-/**
- * Gets the rook available moves based on current positioning and occupancy
- *
- * @param square current square the rook is occupying
- * @param curr_occupancy bitboard of all occupied squares
- * @param rook_mask array of bitboards representing possible rook movements on each square
- * @return bitboard of available spaces the rook can reach
- */
-bb get_rook_magic_attack(int square, bb curr_occupancy, bb* rook_mask) {
-    // get rook attacks assuming current board occupancy
-    curr_occupancy &= rook_mask[square];
-    curr_occupancy *= rook_magic[square];
-    curr_occupancy >>= 64 - rook_bits[square];
-    
-    // return rook attacks
-    return rook_magic_table[square][curr_occupancy];
-}
-
-/**
- * Gets the queen available moves based on current positioning and occupancy
- *
- * @param square current square the bishop is occupying
- * @param curr_occupancy bitboard of all occupied squares
- * @param queen_mask array of bitboards representing possible queen movements on each square
- * @param bishop_mask array of bitboards representing possible bishop movements on each square
- * @param rook_mask array of bitboards representing possible rook movements on each square
- * @return bitboard of available spaces the queen can reach
- */
-bb get_queen_magic_attack(int square, bb curr_occupancy, bb* queen_mask, bb* bishop_mask, bb* rook_mask) {
-    // get bishops magic
-    bb temp_bishop = get_bishop_magic_attack(square, curr_occupancy, bishop_mask);
-    // get rooks magic 
-    bb temp_rook = get_rook_magic_attack(square, curr_occupancy, rook_mask);
-
-    return temp_bishop | temp_rook;
-
 }

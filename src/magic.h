@@ -2,7 +2,9 @@
 #define MAGIC_H
 
 #include <iostream>
+
 #include "bitboard.h"
+
 using namespace std;
 
 // tables
@@ -166,16 +168,10 @@ const int rook_bits[64] = {
     12, 11, 11, 11, 11, 11, 11, 12
 };
 
-int count_bits(bb board);
-int get_lsb(bb board);
 int generate_key(bb blockers, bb magic, int shift);
 bb get_blockers(int permutation, bb mask);
 
 void init_bishop_table(bb* bishop_mask);
 void init_rook_table(bb* rook_mask);
-
-bb get_bishop_magic_attack(int square, bb curr_occupancy, bb* bishop_mask);
-bb get_rook_magic_attack(int square, bb curr_occupancy, bb* rook_mask);
-bb get_queen_magic_attack(int square, bb curr_occupancy, bb* queen_mask, bb* bishop_mask, bb* rook_mask);
 
 #endif

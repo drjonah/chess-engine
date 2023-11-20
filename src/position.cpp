@@ -1,7 +1,9 @@
 #include <iostream>
+
 #include "bitboard.h"
 #include "magic.h"
 #include "position.h"
+
 using namespace std;
 
 void Positions::init() {
@@ -18,6 +20,8 @@ void Positions::init() {
 
     cout << "Initializing magic (rook)..." << endl;
     init_rook_table(this->rook_mask);
+
+    print_readable(this->pawns, this->knights, this->bishops, this->rooks, this->queens, this->kings);
 }
 
 /**
@@ -232,36 +236,53 @@ bb Positions::generate_king_mask(int square) {
     return attacks;
 }
 
+/**
+ * Gets the bishops available moves based on current positioning and occupancy
+ *
+ * @param square current square the bishop is occupying
+ * @param curr_occupancy bitboard of all occupied squares
+ * @return bitboard of available spaces the bishop can reach
+ */
+bb Positions::get_bishop_magic_attack(int square, bb curr_occupancy) {
+    // get bishop attacks assuming current board occupancy
+    curr_occupancy &= this->bishop_mask[square];
+    // gets key for corresponding position
+    int key = generate_key(curr_occupancy, bishop_magic[square], bishop_bits[square]);
+    
+    // return bishop attacks
+    return bishop_magic_table[square][key];
+}
 
-void Positions::attacks_to(int position, int color, bb queen_board, bb pawn_board) {
+/**
+ * Gets the rook available moves based on current positioning and occupancy
+ *
+ * @param square current square the rook is occupying
+ * @param curr_occupancy bitboard of all occupied squares
+ * @return bitboard of available spaces the rook can reach
+ */
+bb Positions::get_rook_magic_attack(int square, bb curr_occupancy) {
+    // get rook attacks assuming current board occupancy
+    curr_occupancy &= this->rook_mask[square];
+    // gets key for corresponding position
+    int key = generate_key(curr_occupancy, rook_magic[square], rook_bits[square]);
+    
+    // return rook attacks
+    return rook_magic_table[square][key];
+}
 
-    // king on a3
+/**
+ * Gets the queen available moves based on current positioning and occupancy
+ *
+ * @param square current square the bishop is occupying
+ * @param curr_occupancy bitboard of all occupied squares
+ * @return bitboard of available spaces the queen can reach
+ */
+bb Positions::get_queen_magic_attack(int square, bb curr_occupancy) {
+    // get bishops magic
+    bb temp_bishop = get_bishop_magic_attack(square, curr_occupancy);
+    // get rooks magic 
+    bb temp_rook = get_rook_magic_attack(square, curr_occupancy);
 
-    // check queen
-    // int queen_pos = __builtin_ctzll(queen_board);
-    // if (this->queen_mask[queen_pos] & temp_king != 0) cout << true << endl;
-    // printBoard(this->pawn_mask[!color][position]);
-    // printBoard(this->pawns[!color]);
-
-    // check pawn
-    // if (this->pawn_mask[!color][position] & this->pawns[!color]) {
-    //     cout << "attack" << endl;
-    // }
-    cout << "queen" << endl;
-    queen_board |= (1ULL << a8);
-    queen_board &= this->queen_mask[position];
-    printBoard(queen_board);
-
-    cout << "pawn" << endl;
-    pawn_board |= (1ULL << b4);
-    pawn_board &= this->pawn_mask[color][position];
-    printBoard(pawn_board);
-
-    printBoard(queen_board | pawn_board);
-
-    // Logic: get queens attack board from kings perspective and see
-    //        if the queen attack board sees the queens position.
-
-    // cout << ((this->queen_mask[h8] & (1ULL << position)) != 0) << endl;
+    return temp_bishop | temp_rook;
 
 }

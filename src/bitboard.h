@@ -2,7 +2,16 @@
 #define BITBOARD_H
 
 #include <iostream>
+#include <vector>
+
 using namespace std;
+
+// colors for printing readable board
+#define RESET   "\033[0m" // RESET
+#define GREEN   "\033[32m" // TRADITIONAL BLACK
+#define YELLOW  "\033[33m" // TRADITIONAL WHITE
+#define CYAN    "\033[36m" // BOARD
+#define WHITE   "\033[37m" // LABELS
 
 enum { white, black };
 enum {
@@ -16,6 +25,12 @@ enum {
     a1, b1, c1, d1, e1, f1, g1, h1
 };
 
+enum {
+    empty,
+    pawn_val, knight_val, bishop_val,
+    rook_val, queen_val, king_val
+};
+
 typedef uint64_t bb;
 
 extern const bb not_a;
@@ -23,7 +38,12 @@ extern const bb not_h;
 extern const bb not_ab;
 extern const bb not_hg;
 
-void printBoard(bb board);
+vector<int> get_piece_squares(bb board);
 
+int count_bits(bb board);
+int get_lsb(bb board);
+
+void print_bb(bb board);
+void print_readable(bb* pawns, bb* knights, bb* bishops, bb* rooks, bb* queens, bb* kings);
 
 #endif 
