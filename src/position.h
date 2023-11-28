@@ -1,6 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+#include <array>
 #include <iostream>
 #include <stack>
 #include <string>
@@ -12,9 +13,9 @@ class Positions {
     public:
         // initalization
         Positions() = default;
-        void init(string FEN);
+        void init(string FEN_args[4]);
         void generate_all_game_pieces(string board);
-        void generate_game_properties(int starting_color, string castling_rights, string en_passant, int half_clock, int full_clock);
+        void generate_game_properties(int starting_color, string castling_rights, string en_passant);
         void generate_attack_moves();
 
         // basic
@@ -22,10 +23,10 @@ class Positions {
         bb* get_piece_board(int piece_val);
 
         // board
+        vector<int> get_available_moves(int square, int color);
         bool is_attacked(int square, int color);
         bool is_check(int color);
-        bool is_checkmate();
-        vector<int[2]> attacks_on(int square, int color);
+        bool is_checkmate(int color);
 
         // movements
         void make_move(int piece_type, int start_square, int end_square, int color);
@@ -47,8 +48,6 @@ class Positions {
     private:
         // properties 
         int starting_color;
-        int half_clock;
-        int full_clock;
         bool en_passant;
         bb castling_rights;
 
@@ -63,7 +62,7 @@ class Positions {
         bb occupancy[3];
 
         // stack
-        stack<int[4]> move_stack;
+        stack<array<int, 4>> move_stack;
 
     public:
         // pieces

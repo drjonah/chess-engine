@@ -21,26 +21,13 @@
 using namespace std;
 
 // initialize game
-void Positions::init(string FEN) {
-    cout << "Initializing board (FEN)..." << endl;
-
-    // parse FEN
-    // FEN ex. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-    string FEN_args[6];
-    int counter = 0;
-    while (counter < 6) {
-        int position = FEN.find(" ");
-        FEN_args[counter] = FEN.substr(0, position);
-        FEN.erase(0, position+1);
-        ++counter;
-    }
-
-    // setting up game
+void Positions::init(string FEN_args[4]) {
+    // setting up game using FEN
     cout << "Generating all games pieces..." << endl;
     generate_all_game_pieces(FEN_args[0]);
 
     cout << "Generating game properties..." << endl;
-    generate_game_properties((FEN_args[1].at(0) == 'w') ? white : black, FEN_args[2], FEN_args[3], stoi(FEN_args[4]), stoi(FEN_args[5]));
+    generate_game_properties((FEN_args[1].at(0) == 'w') ? white : black, FEN_args[2], FEN_args[3]);
 
     // attack masks including magic 
     cout << "Generating attack masks for each piece..." << endl;
@@ -51,15 +38,14 @@ void Positions::init(string FEN) {
 
     cout << "Initializing magic (rook)..." << endl;
     init_rook_table(this->rook_mask);
-
-    // for (int i = 0; i < 12; ++i) print_bb(this->pieces[i]);
-    // for (int i = 0; i < 3; ++i) print_bb(occupancy[i]);
 }
 
 /**
- * Generates all game pieces.
+ * Generates all game pieces. The method is passed a FEN based 
+ * board and it is translated to generating the pieces based 
+ * piece and position.
  * 
- * @param None
+ * @param board string FEN based representation of board
  * @return void
  */
 void Positions::generate_all_game_pieces(string board) {
@@ -96,7 +82,16 @@ void Positions::generate_all_game_pieces(string board) {
     }
 }
 
-void Positions::generate_game_properties(int starting_color, string castling_rights, string en_passant, int half_clock, int full_clock) {
+/**
+ * Generates game properties including starting color,
+ * castling rights, and en_passant.
+ * 
+ * @param starting_color starting color for the game 
+ * @param castling_rights starting castling rights
+ * @param en_passant rules for en passant
+ * @return void
+ */
+void Positions::generate_game_properties(int starting_color, string castling_rights, string en_passant) {
     this->starting_color = starting_color;
 
     // castling rights
@@ -110,9 +105,6 @@ void Positions::generate_game_properties(int starting_color, string castling_rig
 
     // en_passants
     this->en_passant = true;
-
-    this->half_clock = half_clock;
-    this->full_clock = full_clock;
 }
 
 /**
@@ -161,10 +153,31 @@ bb* Positions::get_piece_board(int piece_val) {
 }
 
 /**
- * Returns a piece board based on a given piece value (0->11)
+ * Returns the available positions that can be moved to by a piece and color
  * 
- * @param piece_val alue of a piece ex. 0, 1 = white pawn, black pawn
- * @return board pointer to 64 bit unsigned integer board representation 
+ * @param piece_type piece type to check
+ * @return color color that the piece is
+ * @return returns a vector of all positions on the board where the piece can move to
+ */
+vector<int> Positions::get_available_moves(int piece_type, int color) {
+    vector<int> piece_available_positions;
+    bb king_board, piece_available_bb;
+
+    // get king board, filter with occupancy
+    king_board = this->pieces[piece_type + color];
+    piece_available_bb = king_board & this->occupancy[both];
+
+    // get moves that are available
+    piece_available_positions = get_piece_squares(piece_available_bb);
+
+    return piece_available_positions;
+}
+
+/**
+ * Returns whether a specified square is under attack by other pieces
+ * 
+ * @param square square to check attacks
+ * @return color color that is attacking the square
  */
 bool Positions::is_attacked(int square, int color) {
     // attacked by pawns
@@ -190,6 +203,12 @@ bool Positions::is_attacked(int square, int color) {
     return 0;
 }
 
+/**
+ * Returns whether a king is in check
+ * 
+ * @return color color of the king to check
+ * @return returns a whether the king is under attack
+ */
 bool Positions::is_check(int color) {
     // get king position
     bb king_board = this->pieces[10 + color];
@@ -204,42 +223,32 @@ bool Positions::is_check(int color) {
     return false;
 }
 
-bool Positions::is_checkmate() {
-    return true;
-}
-
-vector<int[2]> Positions::attacks_on(int square, int color) {
-    vector<int[2]> attacking_pieces;
-
-    // get board to check depending on color (opposite of piece color)
-    for (int piece_board = !color; piece_board < 12; piece_board+=2) {
-        // get pieces to check 
-        vector<int> piece_squares = get_piece_squares(this->pieces[piece_board]);
-        for (int piece : piece_squares) {
-            // check to see if piece is attacking desired
-            bb piece_attack_mask;
-            // pawn
-            if (piece_board < 2) piece_attack_mask = pawn_mask[!color][piece];
-            // knight
-            else if (piece_board < 4) piece_attack_mask = knight_mask[piece];
-            // bishop
-            // rook
-            // queen
-            // king 
-        }
+/**
+ * Returns whether a king is in checkmate aka game is over
+ * 
+ * @return color color of the king to check
+ * @return returns a whether the king is no longer able to move
+ */
+bool Positions::is_checkmate(int color) {
+    // get king moves based on its position
+    vector<int> king_moves = get_available_moves(K, color);
+    // loop moves and check
+    for (int square : king_moves) {
+        if (is_attacked(square, !color)) 
+            return true;
     }
-
-    return attacking_pieces;
+    // no checkmate
+    return false;
 }
 
 /**
- * Gets the piece to remove and removes it 
+ * Gets the piece, moves the piece, adds to move stack
  *
  * @param piece_type indicates the board ex P is 0 = white pawn board
  * @param start_square square to start the move
  * @param end_square square to end the move
  * @param color color being moved (occupancy reasons)
- * @return boolean if removed
+ * @return void
  */
 void Positions::make_move(int piece_type, int start_square, int end_square, int color) {
     // move board
@@ -249,12 +258,29 @@ void Positions::make_move(int piece_type, int start_square, int end_square, int 
     move_bit(&this->occupancy[both], start_square, end_square);
 
     // add to stack
-    int stack_prep[4] = {piece_type, start_square, end_square, color};
-    move_stack.push(stack_prep);
+    this->move_stack.push({piece_type, start_square, end_square, color});
 }
 
+/**
+ * Reverts board by unmaking the top move done
+ *
+ * @param piece_type indicates the board ex P is 0 = white pawn board
+ * @param start_square square to start the move
+ * @param end_square square to end the move
+ * @param color color being moved (occupancy reasons)
+ * @return void
+ */
 void Positions::unmake_move() {
+    int piece_type, start_square, end_square, color;
 
+    // gets data from stack
+    piece_type = this->move_stack.top()[0];
+    start_square = this->move_stack.top()[1];
+    end_square = this->move_stack.top()[2];
+    color = this->move_stack.top()[3];
+
+    // removes from stack
+    this->move_stack.pop();
 }
 
 /**

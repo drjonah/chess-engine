@@ -23,13 +23,12 @@ int main() {
     // FEN style boards
     // string starting_board = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     // string starting_board = "rnb1kbnr/ppppp2p/8/8/pp6/2q5/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    string starting_board = "k7/8/8/8/8/8/r7/3K4 b KQkq - 0 1";
+    string starting_board = "k7/8/8/8/8/8/r6r/3K4 b KQkq - 0 1";
 
     Positions game_pieces;
-    game_pieces.init(starting_board);
 
     Game game;
-    game.init(game_pieces); // initializes game
+    game.init(game_pieces, starting_board); // initializes game
     game.run(); // runs the game
     game.end(); // ends the game
 

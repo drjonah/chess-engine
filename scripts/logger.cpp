@@ -85,13 +85,22 @@ bool open_file(ofstream& write_stream, string log_type) {
     return true;
 }
 
-bool log_turn(int piece_type, int start_square, int end_square, 
-              int color, int white_score, int black_score,
-              bool removed, bool white_king, bool black_king) {
+bool log_turn(int piece_type, string start_square, 
+              string end_square, string color, 
+              int white_score, int black_score,
+              int halfmove_clock, int fullmove_number,
+              bool removed, 
+              bool white_king_check, bool white_king_checkmate,
+              bool black_king_check, bool black_king_checkmate) {
     string log_type = "turn_log";
+    string white_status, black_status;
     // file
     ofstream write_stream;
     if (!open_file(write_stream, log_type)) return false;
+
+    // logic
+    white_status = (white_king_check) ? ((white_king_checkmate) ? "checkmate" : "in danger" ) : "safe";
+    black_status = (black_king_check) ? ((black_king_checkmate) ? "checkmate" : "in danger" ) : "safe";
 
     // write
     write_stream << "=========================" << endl;
@@ -103,16 +112,18 @@ bool log_turn(int piece_type, int start_square, int end_square,
     write_stream << "  movement    : " << start_square << " -> " << end_square << endl;
     write_stream << "  murderer    : " << ((removed) ? "yes" : "no") << endl;
 
-    write_stream << "Current Score" << endl;
-    write_stream << "  white : " << white_score << endl;
-    write_stream << "  black : " << white_score << endl;
+    write_stream << "Current Numbers" << endl;
+    write_stream << "  halfmove clock  : " << halfmove_clock << endl;
+    write_stream << "  fullmove number : " << fullmove_number << endl;
+    write_stream << "  white score     : " << white_score << endl;
+    write_stream << "  black score     : " << black_score << endl;
 
     write_stream << "Pieces Under Attack" << endl;
     write_stream << "  none" << endl;
 
     write_stream << "King Safety" << endl;
-    write_stream << "  white : " << ((white_king) ? "in danger" : "safe") << endl;
-    write_stream << "  black : " << ((black_king) ? "in danger" : "safe") << endl;
+    write_stream << "  white : " << white_status << endl;
+    write_stream << "  black : " << black_status << endl;
 
     write_stream << "=========================" << endl << endl;
 
