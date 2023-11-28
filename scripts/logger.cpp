@@ -3,13 +3,16 @@
     Chess Engine by DrJonah
             logger.cpp
 
-    This file logs data to ./logs
+    This file logs data to ./logs.
+    It uses data passed from 
+    what is happening in the game.
 
 \* ============================== */
 
 #include <chrono>
 #include <ctime>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include "logger.h"
 using namespace std;
@@ -33,6 +36,7 @@ string generate_timestamp(string log_type) {
     timestamp = "[ " + log_type + " @ "
                 + to_string(current_time_info->tm_hour) + ':'
                 + to_string(current_time_info->tm_min) + ':'
+                + ((current_time_info->tm_sec < 10) ? "0" : "")
                 + to_string(current_time_info->tm_sec) 
                 + " ]";
 
@@ -107,8 +111,8 @@ bool log_turn(int piece_type, int start_square, int end_square,
     write_stream << "  none" << endl;
 
     write_stream << "King Safety" << endl;
-    write_stream << "  white : " << ((white_king) ? "safe" : "in danger") << endl;
-    write_stream << "  black : " << ((black_king) ? "safe" : "in danger") << endl;
+    write_stream << "  white : " << ((white_king) ? "in danger" : "safe") << endl;
+    write_stream << "  black : " << ((black_king) ? "in danger" : "safe") << endl;
 
     write_stream << "=========================" << endl << endl;
 

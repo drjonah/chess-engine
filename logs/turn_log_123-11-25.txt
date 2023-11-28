@@ -1,0 +1,714 @@
+=========================
+[ turn_log @ 1:34:18 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:34:28 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:34:55 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 55 -> 47
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:35:23 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 51 -> 43
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:35:35 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 47 -> 15
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:35:55 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 43 -> 56
+  murderer    : yes
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : in danger
+=========================
+
+=========================
+[ turn_log @ 1:40:42 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:44:14 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:47:52 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:48:0 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:48:8 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 55 -> 47
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:49:8 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:49:16 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:49:19 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 55 -> 47
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:53:45 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:53:52 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:53:57 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 55 -> 47
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:56:53 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:56:58 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:57:53 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:58:2 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:59:4 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 1:59:8 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 2:0:11 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 2:0:28 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 2:1:20 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 2:2:20 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 2:2:46 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : in danger
+=========================
+
+=========================
+[ turn_log @ 2:2:58 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : in danger
+=========================
+
+=========================
+[ turn_log @ 17:10:52 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:11:1 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:12:2 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:12:11 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:15:39 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:16:0 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:19:38 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:19:43 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 51
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:19:54 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 56 -> 48
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:20:3 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 51 -> 50
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:29:34 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 48 -> 56
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:29:41 ]
+Movement Change
+  piece type  : 10
+  piece color : 0
+  movement    : 59 -> 58
+  murderer    : no
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 17:29:49 ]
+Movement Change
+  piece type  : 7
+  piece color : 1
+  movement    : 56 -> 58
+  murderer    : yes
+Current Score
+  white : 0
+  black : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+

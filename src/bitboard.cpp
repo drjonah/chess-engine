@@ -53,10 +53,45 @@ int count_bits(bb board) {
  * @return least significant bit position
  */
 int get_lsb(bb board) {
-    if (board) {
+    if (board) 
         return count_bits((board & ~board) - 1);
-    }
     return -1;
+}
+
+/**
+ * This removes a 1 bit on the board
+ * 
+ * @param board 64 bit unsigned integer board representation 
+ * @param square square to remove
+ * @return None
+ */
+void remove_bit(bb* board, int square) {
+    *board &= ~(1ULL << (square));
+}
+
+/**
+ * This moves 1s bit
+ * 
+ * @param board 64 bit unsigned integer board representation 
+ * @param starting_square square to remove
+ * @param ending_square square to add
+ * @return None
+ */
+void move_bit(bb* board, int starting_square, int ending_square) {
+    remove_bit(board, starting_square);
+    // add bit
+    *board |= (1ULL << (ending_square));
+}
+
+/**
+ * This returns if a bit is on the board
+ * 
+ * @param board 64 bit unsigned integer board representation 
+ * @param square square to remove
+ * @return true if 1 else 0
+ */
+bool get_bit(bb bitboard, int square) {
+    return (bitboard & (1ULL << square)) != 0;
 }
 
 /**
@@ -83,44 +118,31 @@ void print_bb(bb board) {
 /**
  * Prints all bitboards with labels
  * 
- * @param pawns 64 bit unsigned integer board representation 
- * @param knights 64 bit unsigned integer board representation 
- * @param bishops 64 bit unsigned integer board representation 
- * @param rooks 64 bit unsigned integer board representation 
- * @param queens 64 bit unsigned integer board representation 
- * @param kings 64 bit unsigned integer board representation 
+ * @param pieces 12 bitboard array with each piece, pointer
  * @return None
  */
-void print_readable(bb* pawns, bb* knights, bb* bishops, bb* rooks, bb* queens, bb* kings) {
+void print_readable(bb* pieces) {
     // vars 
     const char* piece_symbols[6] = {"P", "N", "B", "R", "Q", "K"};
     const string colors[2] = {YELLOW, GREEN};
     int readable_board[64] = {0};
 
     // load board
-    for (int square : get_piece_squares(pawns[white])) readable_board[square] = pawn_val;
-    for (int square : get_piece_squares(pawns[black])) readable_board[square] = -pawn_val;
-    for (int square : get_piece_squares(knights[white])) readable_board[square] = knight_val;
-    for (int square : get_piece_squares(knights[black])) readable_board[square] = -knight_val;
-    for (int square : get_piece_squares(bishops[white])) readable_board[square] = bishop_val;
-    for (int square : get_piece_squares(bishops[black])) readable_board[square] = -bishop_val;
-    for (int square : get_piece_squares(rooks[white])) readable_board[square] = rook_val;
-    for (int square : get_piece_squares(rooks[black])) readable_board[square] = -rook_val;
-    for (int square : get_piece_squares(queens[white])) readable_board[square] = queen_val;
-    for (int square : get_piece_squares(queens[black])) readable_board[square] = -queen_val;
-    for (int square : get_piece_squares(kings[white])) readable_board[square] = king_val;
-    for (int square : get_piece_squares(kings[black])) readable_board[square] = -king_val;
+    for (int piece = 0; piece < 12; ++piece) {
+        bb board = pieces[piece];
+        for (int square : get_piece_squares(board)) readable_board[square] = piece+1;
+    }
     
     // main print loop
     cout << endl;
     for (int square = 0; square < 64; ++square) {
-        int piece = abs(readable_board[square]);
+        int piece = readable_board[square]-1;
         if (square % 8 == 0) {
             if (square != 0) cout << CYAN << "\n  ---------------------------------" << endl;
             cout << WHITE << 8 - (square / 8) << " ";
         }
-        if (piece == 0) cout << CYAN << " | " << WHITE << "*";
-        else cout << CYAN << " | " << colors[readable_board[square] > 0 ? 0 : 1] << piece_symbols[piece - 1];
+        if (piece < 0) cout << CYAN << " | " << WHITE << "*";
+        else cout << CYAN << " | " << colors[(readable_board[square] % 2 == 0) ? 0 : 1] << piece_symbols[piece / 2];
     }
     cout << endl << WHITE << "\n     A   B   C   D   E   F   G   H" << RESET << endl << endl;
 }
