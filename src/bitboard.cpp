@@ -8,8 +8,8 @@ using namespace std;
 
 const bb not_a = 18374403900871474942ULL;
 const bb not_h = 9187201950435737471ULL;
-const bb not_ab = 4557430888798830399ULL;
-const bb not_hg = 18229723555195321596ULL;
+const bb not_ab = 18229723555195321596ULL;
+const bb not_hg = 4557430888798830399ULL;
 
 /**
  * This finds where the 1s are on the board aka squares
@@ -67,6 +67,17 @@ int get_lsb(bb board) {
  */
 void remove_bit(bb* board, int square) {
     *board &= ~(1ULL << (square));
+}
+
+/**
+ * This adds a 1 bit on the board
+ * 
+ * @param board 64 bit unsigned integer board representation 
+ * @param square square to remove
+ * @return None
+ */
+void add_bit(bb* board, int square) {
+    *board |= (1ULL << (square));
 }
 
 /**

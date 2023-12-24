@@ -11,6 +11,7 @@
 
 \* ============================== */
 
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <stack>
@@ -19,6 +20,19 @@
 #include "magic.h"
 #include "position.h"
 using namespace std;
+
+// constructor
+// Positions::Positions() : starting_color(0),
+//           en_passant(true),
+//           castling_rights(0ULL),
+//           pawn_mask{{0ULL}},
+//           knight_mask{0ULL},
+//           king_mask{0ULL},
+//           bishop_mask{0ULL},
+//           rook_mask{0ULL},
+//           queen_mask{0ULL},
+//           occupancy{0ULL, 0ULL, 0ULL},
+//           pieces{0ULL} {}
 
 // initialize game
 void Positions::init(string FEN_args[4]) {
@@ -61,6 +75,9 @@ void Positions::generate_all_game_pieces(string board) {
 
     // default the board
     for (int i = 0; i < 12; ++i) this->pieces[i] = 0ULL;
+    for (int i = 0; i < 12; ++i) this->pieces_copy[i] = 0ULL;
+    for (int i = 0; i < 3; ++i) this->occupancy[i] = 0ULL;
+    for (int i = 0; i < 3; ++i) this->occupancy_copy[i] = 0ULL;
 
     // build board
     int square = 0;
@@ -69,9 +86,11 @@ void Positions::generate_all_game_pieces(string board) {
         if (isalpha(piece)) {
             int target_board = piece_conversion[piece];
             int color = (target_board % 2 == 0) ? white : black;
-            this->pieces[target_board] |= (1ULL << square);
-            this->occupancy[color] |= (1ULL << square);
-            this->occupancy[both] |= (1ULL << square);
+
+            add_bit(&(this->pieces[target_board]), square);
+            add_bit(&(this->occupancy[color]), square);
+            add_bit(&(this->occupancy[both]), square);
+
             ++square;
         }
         // skip digit
@@ -95,16 +114,20 @@ void Positions::generate_game_properties(int starting_color, string castling_rig
     this->starting_color = starting_color;
 
     // castling rights
-    this->castling_rights = 0ULL;
+    this->castling_rights = 0;
     for (char piece : castling_rights) {
-        if (piece == 'Q') this->castling_rights |= (1ULL << d1);
-        if (piece == 'q') this->castling_rights |= (1ULL << d8);
-        if (piece == 'K') this->castling_rights |= (1ULL << e1);
-        if (piece == 'k') this->castling_rights |= (1ULL << e8);
+        // white side castling
+        if (piece == 'K') { this->castling_rights |= wk; castling_rights_copy |= wk; } 
+        if (piece == 'Q') { this->castling_rights |= wq; castling_rights_copy |= wq; }
+
+        // black side castling
+        if (piece == 'k') { this->castling_rights |= bk; castling_rights_copy |= bk; }
+        if (piece == 'q') { this->castling_rights |= bq; castling_rights_copy |= bq; }
     }
 
     // en_passants
-    this->en_passant = true;
+    this->en_passant = 1;
+    this->en_passant_copy = 1; 
 }
 
 /**
@@ -156,16 +179,72 @@ bb* Positions::get_piece_board(int piece_val) {
  * Returns the available positions that can be moved to by a piece and color
  * 
  * @param piece_type piece type to check
- * @return color color that the piece is
+ * @param square square to check
+ * @param color color that the piece is
  * @return returns a vector of all positions on the board where the piece can move to
  */
-vector<int> Positions::get_available_moves(int piece_type, int color) {
+vector<int> Positions::get_available_moves(int piece_type, int square, int color) {
     vector<int> piece_available_positions;
-    bb king_board, piece_available_bb;
+    bb movement_board = 0ULL, piece_available_bb = 0ULL;
+    bb opponent_board = this->occupancy[!color];
 
-    // get king board, filter with occupancy
-    king_board = this->pieces[piece_type + color];
-    piece_available_bb = king_board & this->occupancy[both];
+    // get moves for piece
+    if (piece_type == P || piece_type == p) {
+        movement_board = this->pawn_mask[color][square]; // side attacks
+        if ((opponent_board & movement_board) == 0ULL) movement_board = 0ULL; // reset if pawn doesnt have attacks
+
+        // single push 
+        bool single_push = false;
+        int single_push_target = square + ((color == white) ? -8 : 8);
+        int double_push_target = square + ((color == white) ? -16 : 16);
+
+        if (!get_bit(opponent_board, single_push_target)) {
+            // movement_board |= (1ULL << (square + ((color == white) ? -8 : 8)));
+            add_bit(&movement_board, (square + ((color == white) ? -8 : 8)));
+            single_push = true;
+        }
+
+        // double push when pawn is on row 2 or 7
+        // conditions: single push happened and the bit is empty 2 rows up
+        if (single_push &&
+            !get_bit(opponent_board, double_push_target) &&
+            ((piece_type == P && square >= a2 && square <= h2) || (piece_type == p && square >= a7 && square <= h7)))
+            // movement_board |= (1ULL << (square + ((color == white) ? -16 : 16)));
+            add_bit(&movement_board, (square + ((color == white) ? -16 : 16)));
+    }
+    else if (piece_type == N || piece_type == n) movement_board = this->knight_mask[square];
+    else if (piece_type == B || piece_type == b) movement_board = this->get_bishop_magic_attack(square, this->occupancy[both]);
+    else if (piece_type == R || piece_type == r) movement_board = this->get_rook_magic_attack(square, this->occupancy[both]);
+    else if (piece_type == Q || piece_type == q) movement_board = this->get_queen_magic_attack(square, this->occupancy[both]);
+    else {
+        // default king moves
+        movement_board = this->king_mask[square];
+
+        // castling
+        // rules:
+        //  has the rights
+        //  the square for the rook and king are open
+        //  the starting, target, and middle squares are not attacked
+        if (color == white) {
+            if ((this->castling_rights & wk) && !get_bit(this->occupancy[both], f1) && !get_bit(this->occupancy[both], g1) &&
+                !is_attacked(e1, !color) && !is_attacked(f1, !color) && !is_attacked(g1, !color)) 
+                add_bit(&movement_board, g1);
+            if ((this->castling_rights & wq) && !get_bit(this->occupancy[both], b1) && !get_bit(this->occupancy[both], c1) && !get_bit(this->occupancy[both], d1) &&
+                !is_attacked(c1, !color) && !is_attacked(d1, !color) && !is_attacked(e1, !color)) 
+                add_bit(&movement_board, c1);
+        }
+        else {
+            if ((this->castling_rights & bk) && !get_bit(this->occupancy[both], f8) && !get_bit(this->occupancy[both], g8) &&
+                !is_attacked(e8, !color) && !is_attacked(f8, !color) && !is_attacked(g8, !color)) 
+                add_bit(&movement_board, g1);
+            if ((this->castling_rights & bq) && !get_bit(this->occupancy[both], b8) && !get_bit(this->occupancy[both], c8) && !get_bit(this->occupancy[both], d8) &&
+                !is_attacked(c8, !color) && !is_attacked(d8, !color) && !is_attacked(e8, !color)) 
+                add_bit(&movement_board, c1);
+        }
+    }
+
+    // filter blocks on own color
+    piece_available_bb = movement_board & ~this->occupancy[color];
 
     // get moves that are available
     piece_available_positions = get_piece_squares(piece_available_bb);
@@ -176,28 +255,29 @@ vector<int> Positions::get_available_moves(int piece_type, int color) {
 /**
  * Returns whether a specified square is under attack by other pieces
  * 
- * @param square square to check attacks
+ * @param check_square square to check attacks
+ * @param current_square square of current piece to remove
  * @return color color that is attacking the square
  */
-bool Positions::is_attacked(int square, int color) {
+bool Positions::is_attacked(int check_square, int color) {
     // attacked by pawns
-    if ((color == white) && (this->pawn_mask[black][square] & this->pieces[P])) return true;
-    if ((color == black) && (this->pawn_mask[white][square] & this->pieces[p])) return true;
+    if ((color == white) && (this->pawn_mask[black][check_square] & this->pieces[P])) return true;
+    if ((color == black) && (this->pawn_mask[white][check_square] & this->pieces[p])) return true;
     
     // attacked by knights
-    if (this->knight_mask[square] & ((color == white) ? this->pieces[N] : this->pieces[n])) return true;
+    if (this->knight_mask[check_square] & ((color == white) ? this->pieces[N] : this->pieces[n])) return true;
     
     // attacked by bishops
-    if (get_bishop_magic_attack(square, occupancy[both]) & ((color == white) ? this->pieces[B] : this->pieces[b])) return true;
+    if (get_bishop_magic_attack(check_square, occupancy[both]) & ((color == white) ? this->pieces[B] : this->pieces[b])) return true;
 
     // attacked by rooks
-    if (get_rook_magic_attack(square, occupancy[both]) & ((color == white) ? this->pieces[R] : this->pieces[r])) return true;    
+    if (get_rook_magic_attack(check_square, occupancy[both]) & ((color == white) ? this->pieces[R] : this->pieces[r])) return true;    
 
     // attacked by queen
-    if (get_queen_magic_attack(square, occupancy[both]) & ((color == white) ? this->pieces[Q] : this->pieces[q])) return true;
+    if (get_queen_magic_attack(check_square, occupancy[both]) & ((color == white) ? this->pieces[Q] : this->pieces[q])) return true;
     
     // attacked by kings
-    if (this->king_mask[square] & ((color == white) ? this->pieces[K] : this->pieces[k])) return true;
+    if (this->king_mask[check_square] & ((color == white) ? this->pieces[K] : this->pieces[k])) return true;
 
     // by default return false
     return 0;
@@ -230,15 +310,35 @@ bool Positions::is_check(int color) {
  * @return returns a whether the king is no longer able to move
  */
 bool Positions::is_checkmate(int color) {
+    // get king position
+    bb king_board = this->pieces[10 + color];
+    // king SHOULD always be on board, just precaution
+    if (king_board == 0ULL) return false;
+
     // get king moves based on its position
-    vector<int> king_moves = get_available_moves(K, color);
+    int king_square = get_piece_squares(king_board)[0];
+    vector<int> king_moves = get_available_moves(K + color, king_square, color);
+
     // loop moves and check
+    bool checkmate = true;
+
     for (int square : king_moves) {
-        if (is_attacked(square, !color)) 
-            return true;
+        // make temp move for test
+        make_move(K + color, king_square, square, color);
+
+        // check to see if there is an attack
+        if (!is_attacked(square, !color)) checkmate = false;
+
+        // unmake move
+        unmake_move();
+
+        // no checkmate detected
+        if (!checkmate) break;
     }
-    // no checkmate
-    return false;
+    cout << endl;
+
+    // checkmate
+    return checkmate;
 }
 
 /**
@@ -250,15 +350,55 @@ bool Positions::is_checkmate(int color) {
  * @param color color being moved (occupancy reasons)
  * @return void
  */
-void Positions::make_move(int piece_type, int start_square, int end_square, int color) {
+void Positions::make_move(int piece_type, int start_square, int end_square, int color, int castle_move) {
+    // make castle move
+    int castled = 0;
+
+    if (piece_type == K) {
+        // white king side
+        if (end_square == g1) {
+            make_move(R, h1, f1, white, 1);
+            castled = 1;
+        }
+        // white queen side
+        else if (end_square == c1) {
+            make_move(R, a1, d1, white, 1);
+            castled = 1;
+        }
+    }
+    else if (piece_type == k) {
+        // white king side
+        if (end_square == g8) {
+            make_move(r, h8, f8, black, 1);
+            castled = 1;
+        }
+        // white queen side
+        else if (end_square == c8) {
+            make_move(r, a8, d8, black, 1);
+            castled = 1;
+        }
+    }
+
+    // save positon
+    this->save_position();
+
     // move board
     move_bit(get_piece_board(piece_type), start_square, end_square);
     // move occupancy (color and both)
     move_bit(&this->occupancy[color], start_square, end_square);
     move_bit(&this->occupancy[both], start_square, end_square);
 
+    // edit castling rules
+    if (castled && piece_type == K) { this->castling_rights &= ~wk; this->castling_rights &= ~wq; }
+    if (castled && piece_type == k) { this->castling_rights &= ~bk; this->castling_rights &= ~bq; }
+
+    if (!castle_move && piece_type == R && start_square == h1) this->castling_rights &= ~wk; // white king side
+    if (!castle_move && piece_type == R && start_square == a1) this->castling_rights &= ~wq; // white queen side
+    if (!castle_move && piece_type == r && start_square == h8) this->castling_rights &= ~bk; // black king side
+    if (!castle_move && piece_type == r && start_square == a8) this->castling_rights &= ~bq; // black queen side
+
     // add to stack
-    this->move_stack.push({piece_type, start_square, end_square, color});
+    this->move_stack.push({piece_type, start_square, end_square, color, castled});
 }
 
 /**
@@ -270,17 +410,32 @@ void Positions::make_move(int piece_type, int start_square, int end_square, int 
  * @param color color being moved (occupancy reasons)
  * @return void
  */
-void Positions::unmake_move() {
-    int piece_type, start_square, end_square, color;
+vector<int> Positions::unmake_move() {
+    vector<int> unmade;
 
     // gets data from stack
-    piece_type = this->move_stack.top()[0];
-    start_square = this->move_stack.top()[1];
-    end_square = this->move_stack.top()[2];
-    color = this->move_stack.top()[3];
+    unmade.push_back(this->move_stack.top()[0]); // piece_type
+    unmade.push_back(this->move_stack.top()[1]); // start_square
+    unmade.push_back(this->move_stack.top()[2]); // end_square
+    unmade.push_back(this->move_stack.top()[3]); // color
+    unmade.push_back(this->move_stack.top()[4]); // castle_move
 
     // removes from stack
     this->move_stack.pop();
+
+    // restore position
+    this->restore_position();
+
+    // move board
+    move_bit(get_piece_board(unmade[0]), unmade[2], unmade[1]);
+    // move occupancy (color and both)
+    move_bit(&this->occupancy[unmade[3]], unmade[2], unmade[1]);
+    move_bit(&this->occupancy[both], unmade[2], unmade[1]);
+
+    // uncastle move
+    if (unmade[4] == 1) unmake_move();
+
+    return unmade;
 }
 
 /**
@@ -367,7 +522,8 @@ bb Positions::generate_pawn_mask(int color, int square) {
     bb attacks = 0ULL;
     bb board = 0ULL;
 
-    board |= (1ULL << square);
+    // board |= (1ULL << square);
+    add_bit(&board, square);
 
     // white pawn moves
     if (!color) {
@@ -393,7 +549,8 @@ bb Positions::generate_knight_mask(int square) {
     bb attacks = 0ULL;
     bb board = 0ULL;
 
-    board |= (1ULL << square);
+    // board |= (1ULL << square);
+    add_bit(&board, square);
 
     // knight moves
     if ((board >> 17) & not_h) attacks |= (board >> 17);
@@ -421,10 +578,15 @@ bb Positions::generate_bishop_mask(int square) {
     int target_rank = square / 8; // 4
     int target_file = square % 8; // 4
 
-    for (int rank = target_rank+1, file = target_file+1; rank < 7 && file < 7; ++rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NW
-    for (int rank = target_rank-1, file = target_file+1; rank > 0 && file < 7; --rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NE
-    for (int rank = target_rank+1, file = target_file-1; rank < 7 && file > 0; ++rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SW
-    for (int rank = target_rank-1, file = target_file-1; rank > 0 && file > 0; --rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SE
+    // for (int rank = target_rank+1, file = target_file+1; rank < 7 && file < 7; ++rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NW
+    // for (int rank = target_rank-1, file = target_file+1; rank > 0 && file < 7; --rank, ++file) attacks |= (1ULL << (rank * 8 + file)); // NE
+    // for (int rank = target_rank+1, file = target_file-1; rank < 7 && file > 0; ++rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SW
+    // for (int rank = target_rank-1, file = target_file-1; rank > 0 && file > 0; --rank, --file) attacks |= (1ULL << (rank * 8 + file)); // SE
+
+    for (int rank = target_rank+1, file = target_file+1; rank < 7 && file < 7; ++rank, ++file) add_bit(&attacks, (rank * 8 + file)); // NW
+    for (int rank = target_rank-1, file = target_file+1; rank > 0 && file < 7; --rank, ++file) add_bit(&attacks, (rank * 8 + file)); // NE
+    for (int rank = target_rank+1, file = target_file-1; rank < 7 && file > 0; ++rank, --file) add_bit(&attacks, (rank * 8 + file)); // SW
+    for (int rank = target_rank-1, file = target_file-1; rank > 0 && file > 0; --rank, --file) add_bit(&attacks, (rank * 8 + file)); // SE
 
     return attacks;
 }
@@ -443,10 +605,15 @@ bb Positions::generate_rook_mask(int square) {
     int target_file = square % 8;
     
     // mask relevant bishop occupancy bits
-    for (int rank = target_rank+1; rank < 7; ++rank) attacks |= (1ULL << (rank * 8 + target_file)); // W
-    for (int rank = target_rank-1; rank > 0; --rank) attacks |= (1ULL << (rank * 8 + target_file)); // E
-    for (int file = target_file+1; file < 7; ++file) attacks |= (1ULL << (target_rank * 8 + file)); // N
-    for (int file = target_file-1; file > 0; --file) attacks |= (1ULL << (target_rank * 8 + file)); // S
+    // for (int rank = target_rank+1; rank < 7; ++rank) attacks |= (1ULL << (rank * 8 + target_file)); // W
+    // for (int rank = target_rank-1; rank > 0; --rank) attacks |= (1ULL << (rank * 8 + target_file)); // E
+    // for (int file = target_file+1; file < 7; ++file) attacks |= (1ULL << (target_rank * 8 + file)); // N
+    // for (int file = target_file-1; file > 0; --file) attacks |= (1ULL << (target_rank * 8 + file)); // S
+
+    for (int rank = target_rank+1; rank < 7; ++rank) add_bit(&attacks, (rank * 8 + target_file)); // W
+    for (int rank = target_rank-1; rank > 0; --rank) add_bit(&attacks, (rank * 8 + target_file)); // E
+    for (int file = target_file+1; file < 7; ++file) add_bit(&attacks, (target_rank * 8 + file)); // N
+    for (int file = target_file-1; file > 0; --file) add_bit(&attacks, (target_rank * 8 + file)); // S
 
     return attacks;
 }
@@ -482,7 +649,8 @@ bb Positions::generate_king_mask(int square) {
     bb attacks = 0ULL;
     bb board = 0ULL;
 
-    board |= (1ULL << square);
+    // board |= (1ULL << square);
+    add_bit(&board, square);
 
     // king moves
     if (board >> 8) attacks |= (board >> 8);
@@ -495,4 +663,22 @@ bb Positions::generate_king_mask(int square) {
     if ((board << 1) & not_a) attacks |= (board << 1);
 
     return attacks;
+}
+
+void Positions::save_position() {
+    // Save position into memory
+    memcpy(this->pieces_copy, this->pieces, 96);
+    memcpy(this->occupancy_copy, this->occupancy, 24);
+
+    this->en_passant_copy = this->en_passant;
+    this->castling_rights_copy = this->castling_rights;
+}
+
+void Positions::restore_position() {
+    // Restore position from memory
+    memcpy(this->pieces, this->pieces_copy, 96);
+    memcpy(this->occupancy, this->occupancy_copy, 24);
+
+    this->en_passant = this->en_passant_copy;
+    this->castling_rights = this->castling_rights_copy;
 }

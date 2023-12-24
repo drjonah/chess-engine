@@ -32,6 +32,12 @@ enum {
     Q, q, 
     K, k
 };
+enum {
+    wk=1,
+    wq=2,
+    bk=4,
+    bq=8
+};
 
 typedef uint64_t bb;
 
@@ -46,6 +52,8 @@ int count_bits(bb board);
 int get_lsb(bb board);
 
 void remove_bit(bb* board, int square);
+void add_bit(bb* board, int square);
+
 void move_bit(bb* board, int starting_square, int ending_square);
 bool get_bit(bb bitboard, int square);
 

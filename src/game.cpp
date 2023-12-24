@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "bitboard.h"
 #include "game.h"
 #include "../scripts/logger.h"
@@ -54,6 +55,20 @@ void Game::run() {
         // white or black
         color = (color%2 == white) ? white : black;
 
+        // xray
+        vector<int> xray = this->positions.get_available_moves(K, e1, white);
+        for (int xray_sqaure : xray) cout << squares[xray_sqaure] << ", ";
+        cout << endl;
+
+        // tester
+        // cout << this->positions.castling_rights << endl;
+        // this->positions.make_move(K, e1, g1, white);
+        // print_readable(this->positions.pieces);
+        // cout << this->positions.castling_rights << endl;
+        // this->positions.unmake_move();
+        // print_readable(this->positions.pieces);
+        // cout << this->positions.castling_rights << endl;
+
         // input
         color_str = (color == white) ? "white" : "black";
         cout << "[" << color_str << "] Enter move: ";
@@ -76,6 +91,7 @@ void Game::run() {
 
         // make move
         if (board != 0ULL) {
+
             this->positions.make_move(piece_type, start_square, end_square, color);
             captured = this->positions.piece_capture(end_square, !color);
 
@@ -94,9 +110,9 @@ void Game::run() {
         // check / checkmate for colors
         for (int check_color = white; check_color <= black; ++check_color) {
             color_str = (check_color == white) ? "white" : "black";
-            if (this->positions.is_check(white)) {
+            if (this->positions.is_check(check_color)) {
                 cout << color_str << " is in check." << endl;
-                if (this->positions.is_checkmate(white)) {
+                if (this->positions.is_checkmate(check_color)) {
                     cout << color_str << " is in checkmate." << endl; 
                     checkmate = true;
                     break;
@@ -106,10 +122,10 @@ void Game::run() {
 
         // logger
         resp_log = log_turn(piece_type, squares[start_square], 
-                            squares[end_square], color_str, 
+                            squares[end_square], (((color-1) == white) ? "white" : "black"), 
                             0, 0, 
                             this->halfmove_clock, this->fullmove_number,
-                            captured, 
+                            captured, 0,
                             this->positions.is_check(white), this->positions.is_checkmate(white), 
                             this->positions.is_check(black), this->positions.is_checkmate(black));
 

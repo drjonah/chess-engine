@@ -89,7 +89,7 @@ bool log_turn(int piece_type, string start_square,
               string end_square, string color, 
               int white_score, int black_score,
               int halfmove_clock, int fullmove_number,
-              bool removed, 
+              bool removed, bool castled,
               bool white_king_check, bool white_king_checkmate,
               bool black_king_check, bool black_king_checkmate) {
     string log_type = "turn_log";
@@ -111,6 +111,7 @@ bool log_turn(int piece_type, string start_square,
     write_stream << "  piece color : " << color << endl;
     write_stream << "  movement    : " << start_square << " -> " << end_square << endl;
     write_stream << "  murderer    : " << ((removed) ? "yes" : "no") << endl;
+    write_stream << "  castled     : " << ((castled) ? "yes" : "no") << endl;
 
     write_stream << "Current Numbers" << endl;
     write_stream << "  halfmove clock  : " << halfmove_clock << endl;

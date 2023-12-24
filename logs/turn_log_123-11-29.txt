@@ -1,0 +1,323 @@
+=========================
+[ turn_log @ 19:16:54 ]
+Movement Change
+  piece type  : 7
+  piece color : white
+  movement    : a2 -> b3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : checkmate
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 19:17:53 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 19:18:10 ]
+Movement Change
+  piece type  : 10
+  piece color : black
+  movement    : d1 -> c1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 2
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:16:47 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:17:00 ]
+Movement Change
+  piece type  : 10
+  piece color : black
+  movement    : d1 -> f1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 2
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:17:08 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a3 -> a1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 3
+  fullmove number : 3
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:19:00 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:19:56 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:21:09 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:22:18 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:24:04 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:25:34 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:25:53 ]
+Movement Change
+  piece type  : 10
+  piece color : black
+  movement    : d1 -> d3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 2
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:26:50 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : a2 -> a4
+  murderer    : no
+Current Numbers
+  halfmove clock  : 1
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:26:54 ]
+Movement Change
+  piece type  : 10
+  piece color : black
+  movement    : d1 -> c1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 2
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:27:05 ]
+Movement Change
+  piece type  : 7
+  piece color : black
+  movement    : h2 -> h1
+  murderer    : no
+Current Numbers
+  halfmove clock  : 3
+  fullmove number : 3
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : in danger
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 23:27:22 ]
+Movement Change
+  piece type  : 10
+  piece color : black
+  movement    : c1 -> c3
+  murderer    : no
+Current Numbers
+  halfmove clock  : 4
+  fullmove number : 3
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
