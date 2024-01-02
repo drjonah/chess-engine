@@ -2,6 +2,7 @@
 #define BITBOARD_H
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -53,11 +54,10 @@ int get_lsb(bb board);
 
 void remove_bit(bb* board, int square);
 void add_bit(bb* board, int square);
-
 void move_bit(bb* board, int starting_square, int ending_square);
 bool get_bit(bb bitboard, int square);
 
 void print_bb(bb board);
-void print_readable(bb* pieces);
+void print_readable(bb* pieces, bb full_occupancy, string en_passant_state, int castling_state);
 
 #endif 

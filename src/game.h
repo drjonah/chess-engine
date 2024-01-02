@@ -16,13 +16,14 @@ class Game {
         void end();
 
     private:
-        void parse_FEN(string FEN_board, string FEN_args[4]);
+        void parse_FEN(string FEN_board, string FEN_args[3]);
 
     private:
         // piece positions
         Positions positions;
 
-        // clock
+        // game data
+        int current_color;
         int halfmove_clock;
         int fullmove_number;
 };

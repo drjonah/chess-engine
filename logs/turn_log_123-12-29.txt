@@ -1,0 +1,240 @@
+=========================
+[ turn_log @ 0:5:44 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:6:41 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:9:11 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:14:02 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:14:55 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:16:29 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:16:38 ]
+Movement Change
+  piece type  : 0
+  piece color : black
+  movement    : h1 -> h2
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:16:46 ]
+Movement Change
+  piece type  : 0
+  piece color : black
+  movement    : h2 -> h1
+  murderer    : no
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:17:03 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:19:50 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : yes
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:19:57 ]
+Movement Change
+  piece type  : 1
+  piece color : black
+  movement    : h2 -> h1
+  murderer    : no
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 2
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+
+=========================
+[ turn_log @ 0:20:15 ]
+Movement Change
+  piece type  : 0
+  piece color : white
+  movement    : h7 -> h8
+  murderer    : no
+  castled     : no
+Current Numbers
+  halfmove clock  : 0
+  fullmove number : 1
+  white score     : 0
+  black score     : 0
+Pieces Under Attack
+  none
+King Safety
+  white : safe
+  black : safe
+=========================
+

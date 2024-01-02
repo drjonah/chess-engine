@@ -1,9 +1,17 @@
+/* ============================== *\
+
+    Chess Engine by DrJonah
+         bitboard.cpp
+
+    This file manages initialization
+    and manipulation of bitboards.
+
+\* ============================== */
+
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "bitboard.h"
-
 using namespace std;
 
 const bb not_a = 18374403900871474942ULL;
@@ -89,9 +97,10 @@ void add_bit(bb* board, int square) {
  * @return None
  */
 void move_bit(bb* board, int starting_square, int ending_square) {
+    // remove bit from the board
     remove_bit(board, starting_square);
-    // add bit
-    *board |= (1ULL << (ending_square));
+    // add bit to the board
+    add_bit(board, ending_square);
 }
 
 /**
@@ -132,7 +141,7 @@ void print_bb(bb board) {
  * @param pieces 12 bitboard array with each piece, pointer
  * @return None
  */
-void print_readable(bb* pieces) {
+void print_readable(bb* pieces, bb full_occupancy, string en_passant_state, int castling_state) {
     // vars 
     const char* piece_symbols[6] = {"P", "N", "B", "R", "Q", "K"};
     const string colors[2] = {YELLOW, GREEN};
@@ -156,4 +165,14 @@ void print_readable(bb* pieces) {
         else cout << CYAN << " | " << colors[(readable_board[square] % 2 == 0) ? 0 : 1] << piece_symbols[piece / 2];
     }
     cout << endl << WHITE << "\n     A   B   C   D   E   F   G   H" << RESET << endl << endl;
+
+    // game details
+    cout << "     Bitboard: " << full_occupancy << endl;
+    cout << "     En-passante: " << en_passant_state << endl;
+    cout << "     Castling: ";
+    cout << ((castling_state & wk) ? "W" : "-");
+    cout << ((castling_state & wq) ? "Q" : "-");
+    cout << ((castling_state & bk) ? "w" : "-");
+    cout << ((castling_state & bq) ? "q" : "-");
+    cout << endl;
 }

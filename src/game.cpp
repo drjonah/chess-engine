@@ -34,7 +34,7 @@ void Game::init(Positions& positions, string FEN_board) {
     this->positions = positions;
 
     // deal with FEN
-    string FEN_args[4];
+    string FEN_args[3];
     this->parse_FEN(FEN_board, FEN_args);
     this->positions.init(FEN_args);
 }
@@ -42,43 +42,52 @@ void Game::init(Positions& positions, string FEN_board) {
 void Game::run() {
     bb* board = 0ULL;
     string input, color_str;
-    int start_square, end_square, color, piece_type;
+    int start_square, end_square, color, piece_type, score;
     bool resp_log, captured, checkmate;
 
-    color = this->positions.get_starting_color();
+    color = this->current_color;
     checkmate = false;
 
     while (true) {
+        State current_state = this->positions.get_state();
+
         // print
-        print_readable(this->positions.pieces);
+        print_readable(current_state.pieces_state, current_state.occupancy_state[2], squares[current_state.en_passant_state], current_state.castling_state);
 
-        // white or black
-        color = (color%2 == white) ? white : black;
-
-        // xray
-        vector<int> xray = this->positions.get_available_moves(K, e1, white);
-        for (int xray_sqaure : xray) cout << squares[xray_sqaure] << ", ";
-        cout << endl;
-
-        // tester
-        // cout << this->positions.castling_rights << endl;
-        // this->positions.make_move(K, e1, g1, white);
-        // print_readable(this->positions.pieces);
-        // cout << this->positions.castling_rights << endl;
-        // this->positions.unmake_move();
-        // print_readable(this->positions.pieces);
-        // cout << this->positions.castling_rights << endl;
+        // xray white pawns
+        // bb pawn_board = current_state.pieces_state[0];
+        // vector<int> pawns = get_piece_squares(pawn_board);
+        // for (int pawn_square : pawns) {
+        //     vector<int> pawns_moves = this->positions.get_piece_moves(P, pawn_square, white);
+        //     cout << "p [" << squares[pawn_square] << "] ";
+        //     for (int i = 0; i < pawns_moves.size(); ++i) 
+        //         cout << squares[pawns_moves[i]] << ", ";
+        //     cout << endl;
+        // }
 
         // input
-        color_str = (color == white) ? "white" : "black";
-        cout << "[" << color_str << "] Enter move: ";
-        cin >> input;
+        // color_str = (color == white) ? "white" : "black";
+        // cout << "[" << color_str << "] Enter move: ";
+        // cin >> input;
 
-        if (input == "q") break;
+        // if (input == "q") break;
 
         // clean input
-        start_square = ((8 - stoi(input.substr(1,1))) * 8) + (input[0] - 'a');
-        end_square = ((8 - stoi(input.substr(3))) * 8) + (input[2] - 'a');
+        // start_square = ((8 - stoi(input.substr(1,1))) * 8) + (input[0] - 'a');
+        // end_square = ((8 - stoi(input.substr(3))) * 8) + (input[2] - 'a');
+
+        // AI 
+        Move best_move = this->positions.get_best_move(color);
+        piece_type = best_move.piece_type;
+        start_square = best_move.start_square;
+        end_square = best_move.end_square;
+        score = best_move.score;
+
+        cout << "AI: ";
+        cout << "Piece=" << piece_type;
+        cout << ", Move=" << squares[start_square] << squares[end_square];
+        cout << ", Score=" << score;
+        cout << endl;
 
         // find board to edit
         for (int piece = color; piece < 12; piece+=2) {
@@ -107,61 +116,66 @@ void Game::run() {
             board = 0ULL;
         }
 
-        // check / checkmate for colors
-        for (int check_color = white; check_color <= black; ++check_color) {
-            color_str = (check_color == white) ? "white" : "black";
-            if (this->positions.is_check(check_color)) {
-                cout << color_str << " is in check." << endl;
-                if (this->positions.is_checkmate(check_color)) {
-                    cout << color_str << " is in checkmate." << endl; 
-                    checkmate = true;
-                    break;
-                }
-            }
-        }
+        break;
 
-        // logger
-        resp_log = log_turn(piece_type, squares[start_square], 
-                            squares[end_square], (((color-1) == white) ? "white" : "black"), 
-                            0, 0, 
-                            this->halfmove_clock, this->fullmove_number,
-                            captured, 0,
-                            this->positions.is_check(white), this->positions.is_checkmate(white), 
-                            this->positions.is_check(black), this->positions.is_checkmate(black));
+        // // check / checkmate for colors
+        // for (int check_color = white; check_color <= black; ++check_color) {
+        //     color_str = (check_color == white) ? "white" : "black";
+        //     if (this->positions.is_check(check_color)) {
+        //         cout << color_str << " is in check." << endl;
+        //         if (this->positions.is_checkmate(check_color)) {
+        //             cout << color_str << " is in checkmate." << endl; 
+        //             checkmate = true;
+        //             break;
+        //         }
+        //     }
+        // }
 
-        if (!resp_log) cerr << "Logging error!" << endl;
-        else cout << "Logging successful!" << endl;
+        // // logger
+        // resp_log = log_turn(piece_type, squares[start_square], 
+        //                     squares[end_square], (((color-1) == white) ? "white" : "black"), 
+        //                     0, 0, 
+        //                     this->halfmove_clock, this->fullmove_number,
+        //                     captured, 0,
+        //                     this->positions.is_check(white), this->positions.is_checkmate(white), 
+        //                     this->positions.is_check(black), this->positions.is_checkmate(black));
 
-        // checkmate
-        if (checkmate) break;
+        // if (!resp_log) cerr << "Logging error!" << endl;
+        // else cout << "Logging successful!" << endl;
+
+        // // checkmate
+        // if (checkmate) break;
     }
 }
 
 void Game::end() {
+    State final_state = this->positions.get_state();
+
     cout << "\nGame over." << endl;
-    print_readable(this->positions.pieces);
+    print_readable(final_state.pieces_state, final_state.occupancy_state[2], squares[final_state.en_passant_state], final_state.castling_state);
 }
 
-void Game::parse_FEN(string FEN_board, string FEN_args[4]) {
+void Game::parse_FEN(string FEN_board, string FEN_args[3]) {
     // FEN ex. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     cout << "Initializing board (FEN)..." << endl;
 
-    int clock_args[2];
+    int game_data[3];
     int counter = 0;
     while (counter < 6) {
         int position = FEN_board.find(" ");
 
         // differentiate where args go 
-        if (counter < 4)
-            FEN_args[counter] = FEN_board.substr(0, position);
-        else
-            clock_args[counter - 4] = stoi(FEN_board.substr(0, position));
+        if (counter == 0) FEN_args[counter] = FEN_board.substr(0, position);
+        else if (counter == 1) game_data[0] = ((FEN_board.substr(0, position).at(0) == 'w') ? white : black);
+        else if (counter == 2 || counter == 3) FEN_args[counter - 1] = FEN_board.substr(0, position);
+        else game_data[counter - 3] = stoi(FEN_board.substr(0, position));
 
         FEN_board.erase(0, position+1);
         ++counter;
     }
 
     // init clock
-    this->halfmove_clock = clock_args[0];
-    this->fullmove_number = clock_args[1];
+    this->current_color = game_data[0];
+    this->halfmove_clock = game_data[1];
+    this->fullmove_number = game_data[2];
 }
